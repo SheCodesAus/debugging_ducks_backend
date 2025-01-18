@@ -11,20 +11,27 @@ class ListCategory(models.Model):
     modified_by = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='category_owner_modifier' 
+       related_name='category_owner_modifier',
+       null=True,
+       blank=True  
     )
     archived_by = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='category_owner_archiver' 
+       related_name='category_owner_archiver',
+       null=True,
+       blank=True  
     )
     created_by = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='category_owner_creator' 
+       related_name='category_owner_creator',
+       null=True,
+       blank=True  
     )
 
 class ListIndividual(models.Model):
+    list_name = models.CharField(max_length=255, null=True)
     individual_budget = models.IntegerField(blank=True, null=True)
     archived_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now=True)
@@ -34,26 +41,36 @@ class ListIndividual(models.Model):
     category_id = models.ForeignKey(
        'ListCategory',
        on_delete=models.CASCADE,
-       related_name='list_category' 
+       related_name='list_category',
+       null=True,
+       blank=True 
     )
     list_owner = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='list_owner' 
+       related_name='list_owner_id',
+       null=True,
+       blank=True  
     )
     modified_by = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='list_owner_modifier' 
+       related_name='list_owner_modifier',
+       null=True,
+       blank=True  
     )
     archived_by = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='list_owner_archiver' 
+       related_name='list_owner_archiver',
+       null=True,
+       blank=True  
     )
     created_by = models.ForeignKey(
        get_user_model(),
        on_delete=models.CASCADE,
-       related_name='list_owner_creator' 
+       related_name='list_owner_creator',
+       null=True,
+       blank=True  
     )
     

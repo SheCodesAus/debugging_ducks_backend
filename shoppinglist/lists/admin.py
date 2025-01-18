@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import ListCategory, ListIndividual
 
-# Register your models here.
+admin.site.register(ListCategory)
+admin.site.register(ListIndividual)
