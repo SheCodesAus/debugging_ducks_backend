@@ -1,2 +1,2 @@
-release: python crowdfunding/manage.py migrate
-web: gunicorn --pythonpath crowdfunding crowdfunding.wsgi --log-file -
+release: python shoppinglist/manage.py migrate
+web: gunicorn --pythonpath shoppinglist shoppinglist.wsgi --log-file -
