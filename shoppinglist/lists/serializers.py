@@ -6,3 +6,8 @@ class ListIndividualSerializer(serializers.ModelSerializer):
         model = apps.get_model('lists.ListIndividual')
         fields = '__all__'
 
+class ListCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = apps.get_model('lists.ListCategory')
+        fields = '__all__'
+
