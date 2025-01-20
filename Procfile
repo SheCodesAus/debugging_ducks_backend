@@ -1,2 +1,2 @@
 release: python shoppinglist/manage.py migrate
-web: gunicorn shoppinglist.wsgi:application --log-file -
+web: gunicorn --pythonpath shoppinglist shoppinglist.wsgi --log-file -
