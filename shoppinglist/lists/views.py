@@ -73,3 +73,64 @@ class IndividualLists(APIView):
             {"message": "Shopping list deleted successfully."},
             status=status.HTTP_204_NO_CONTENT
         )
+
+class CategoryList(APIView):
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
+
+    def get_object(self, pk):
+        try:
+            categorylist = ListCategory.objects.get(pk=pk)
+            self.check_object_permissions(self.request, categorylist)
+            return categorylist
+        except ListIndividual.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, pk):
+        # Fetch and return a lists Category
+        categorylist = self.get_object(pk)
+        serializer = ListCategorySerializer(categorylist)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = ListCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(list_owner=request.user)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+    
+    def put(self, request, pk):
+        categorylist = self.get_object(pk)
+        serializer = ListCategorySerializer(
+            instance=categorylist,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    def delete(self, request, pk):
+        categorylist = self.get_object(pk)
+        categorylist.delete()
+        return Response(
+            {"message": "List Category deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+    
