@@ -31,15 +31,13 @@ class ListCategory(models.Model):
 
 class ListIndividual(models.Model):
     list_name = models.CharField(max_length=255)
-    notes = models.CharField(max_length=255, blank=True)
-    image = models.URLField(blank=True, null=True)
+    notes = models.TextField(max_length=255, blank=True)
+    image = models.URLField(blank=True)
     individual_budget = models.IntegerField(blank=True, null=True)
     category_id = models.ForeignKey(
         "ListCategory",
         on_delete=models.CASCADE,
         related_name="lists",
-        null=True,
-        blank=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     list_owner = models.ForeignKey(
@@ -79,7 +77,7 @@ class Items(models.Model):
     favourite = models.BooleanField(default=False)
     purchased = models.BooleanField(default=False)
     cost = models.IntegerField(blank=True, null=True)
-    comments = models.CharField(max_length=255, blank=True)
+    comments = models.TextField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         get_user_model(),
