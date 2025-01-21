@@ -46,8 +46,6 @@ class ListIndividual(models.Model):
         get_user_model(),
         on_delete=models.CASCADE,
         related_name="owned_lists",
-        null=True,
-        blank=True,
     )
     modified_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     modified_by = models.ForeignKey(
@@ -62,6 +60,45 @@ class ListIndividual(models.Model):
         get_user_model(),
         on_delete=models.CASCADE,
         related_name="lists_archived",
+        null=True,
+        blank=True,
+    )
+
+
+class Items(models.Model):
+    list_id = models.ForeignKey(
+        "ListIndividual",
+        on_delete=models.CASCADE,
+        related_name="items",
+    )
+    name = models.CharField(max_length=255)
+    store = models.CharField(max_length=255, blank=True)
+    link = models.URLField(blank=True)
+    image = models.URLField(blank=True)
+    ranking = models.IntegerField()
+    favourite = models.BooleanField(default=False)
+    purchased = models.BooleanField(default=False)
+    cost = models.IntegerField(blank=True, null=True)
+    comments = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="owned_items",
+    )
+    modified_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    modified_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="items_modified",
+        null=True,
+        blank=True,
+    )
+    archived_at = models.DateTimeField(blank=True, null=True)
+    archived_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="items_archived",
         null=True,
         blank=True,
     )
