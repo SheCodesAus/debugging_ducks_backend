@@ -74,7 +74,7 @@ class IndividualLists(APIView):
             status=status.HTTP_204_NO_CONTENT
         )
 
-class CategoryList(APIView):
+class ListCategory(APIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly
@@ -82,16 +82,16 @@ class CategoryList(APIView):
 
     def get_object(self, pk):
         try:
-            categorylist = ListCategory.objects.get(pk=pk)
+            listcategory = ListCategory.objects.get(pk=pk)
             self.check_object_permissions(self.request, categorylist)
-            return categorylist
+            return listcategory
         except ListIndividual.DoesNotExist:
             raise Http404
     
     def get(self, request, pk):
         # Fetch and return a lists Category
-        categorylist = self.get_object(pk)
-        serializer = ListCategorySerializer(categorylist)
+        listcategory = self.get_object(pk)
+        serializer = ListCategorySerializer(listcategory)
         return Response(serializer.data)
     
     def post(self, request):
@@ -111,9 +111,9 @@ class CategoryList(APIView):
         )
     
     def put(self, request, pk):
-        categorylist = self.get_object(pk)
+        listcategory = self.get_object(pk)
         serializer = ListCategorySerializer(
-            instance=categorylist,
+            instance=listcategory,
             data=request.data,
             partial=True
         )
@@ -127,8 +127,8 @@ class CategoryList(APIView):
         )
     
     def delete(self, request, pk):
-        categorylist = self.get_object(pk)
-        categorylist.delete()
+        listcategory = self.get_object(pk)
+        listcategory.delete()
         return Response(
             {"message": "List Category deleted successfully."},
             status=status.HTTP_204_NO_CONTENT
