@@ -62,4 +62,20 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
 
-        return Response({"token": token.key, "user_id": user.id, "email": user.email})
+        return Response({
+            "token": token.key, 
+            "user": {
+                'id': user.id,
+                # "last_login": null,
+                # "is_superuser": true,
+                "username": "",
+                "first_name": "",
+                "last_name": "",
+                "email": "",
+                # "is_staff": true,
+                # "is_active": true,
+                # "date_joined": "2025-01-20T19:18:50.789992+08:00",
+                "groups": [],
+                "user_permissions": []
+            }
+        })
