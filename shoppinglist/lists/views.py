@@ -8,7 +8,6 @@ from .serializers import ListCategorySerializer, ListIndividualSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
-
 class IndividualLists(APIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
