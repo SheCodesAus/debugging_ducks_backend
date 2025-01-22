@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.http import Http404
 from .models import ListCategory, ListIndividual
-from .serializers import ListCategorySerializer, ListIndividualSerializer
+from .serializers import ListCategorySerializer, ListIndividualSerializer, CustomAuthTokenSerializer
 from .permissions import IsOwnerOrReadOnly
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 
 
 class IndividualLists(APIView):
@@ -133,4 +135,19 @@ class ListCategory(APIView):
             {"message": "List Category deleted successfully."},
             status=status.HTTP_204_NO_CONTENT
         )
+
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                         context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        
+        response_serializer = CustomAuthTokenSerializer({
+            'token': token.key,
+            'user': user
+        })
+        
+        return Response(response_serializer.data)
     
