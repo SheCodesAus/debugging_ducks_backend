@@ -15,14 +15,4 @@ class ListCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
-        read_only_fields = ('id',)
-
-
-class CustomAuthTokenSerializer(serializers.Serializer):
-    token = serializers.CharField()
-    user = UserSerializer()
 
