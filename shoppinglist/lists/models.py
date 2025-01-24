@@ -63,7 +63,7 @@ class ListIndividual(models.Model):
     )
 
 
-class Items(models.Model):
+class Item(models.Model):
     list_id = models.ForeignKey(
         "ListIndividual",
         on_delete=models.CASCADE,
