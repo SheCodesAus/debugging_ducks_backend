@@ -24,3 +24,4 @@ class ListCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = apps.get_model("lists.ListCategory")
         fields = "__all__"
+        read_only_fields = ['category_owner']
