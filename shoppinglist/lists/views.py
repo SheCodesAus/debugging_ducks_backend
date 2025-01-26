@@ -8,8 +8,59 @@ from .serializers import (
     ListCategorySerializer,
     ListIndividualSerializer,
     ItemSerializer,
+    ListDetailSerializer,
+    ItemDetailSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
+
+
+class ItemsList(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        items = Item.objects.all()
+        serializer = ItemSerializer(items, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication credentials were not provided."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(created_by=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ItemDetail(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            item = Item.objects.get(pk=pk)
+            self.check_object_permissions(self.request, item)
+            return item
+        except Item.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        item = self.get_object(pk)
+        serializer = ItemSerializer(item)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        item = self.get_object(pk)
+        serializer = ItemSerializer(instance=item, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IndividualLists(APIView):
@@ -48,12 +99,12 @@ class ListDetail(APIView):
 
     def get(self, request, pk):
         shoppinglist = self.get_object(pk)
-        serializer = ListIndividualSerializer(shoppinglist)
+        serializer = ListDetailSerializer(shoppinglist)
         return Response(serializer.data)
 
     def put(self, request, pk):
         shoppinglist = self.get_object(pk)
-        serializer = ListIndividualSerializer(
+        serializer = ListDetailSerializer(
             instance=shoppinglist, data=request.data, partial=True
         )
         if serializer.is_valid():
