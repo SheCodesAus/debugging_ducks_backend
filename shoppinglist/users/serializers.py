@@ -9,3 +9,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return CustomUser.objects.create_user(**validated_data)
+
+
+class CustomAuthTokenSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    user = CustomUserSerializer()
