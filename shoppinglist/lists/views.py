@@ -8,8 +8,62 @@ from .serializers import (
     ListCategorySerializer,
     ListIndividualSerializer,
     ItemSerializer,
+    CategoryDetailSerializer,
+    ListDetailSerializer,
+    ItemDetailSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
+
+
+class ItemsList(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        items = Item.objects.all()
+        serializer = ItemSerializer(items, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication credentials were not provided."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(created_by=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ItemDetail(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            item = Item.objects.get(pk=pk)
+            self.check_object_permissions(self.request, item)
+            return item
+        except Item.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        item = self.get_object(pk)
+        serializer = ItemDetailSerializer(item)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        item = self.get_object(pk)
+        serializer = ItemDetailSerializer(
+            instance=item, data=request.data, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IndividualLists(APIView):
@@ -35,6 +89,15 @@ class IndividualLists(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ListsFromLoggedInUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        shoppinglists = ListIndividual.objects.filter(list_owner=request.user)
+        serializer = ListIndividualSerializer(shoppinglists, many=True)
+        return Response(serializer.data)
+
+
 class ListDetail(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -48,12 +111,12 @@ class ListDetail(APIView):
 
     def get(self, request, pk):
         shoppinglist = self.get_object(pk)
-        serializer = ListIndividualSerializer(shoppinglist)
+        serializer = ListDetailSerializer(shoppinglist)
         return Response(serializer.data)
 
     def put(self, request, pk):
         shoppinglist = self.get_object(pk)
-        serializer = ListIndividualSerializer(
+        serializer = ListDetailSerializer(
             instance=shoppinglist, data=request.data, partial=True
         )
         if serializer.is_valid():
@@ -85,8 +148,17 @@ class IndividualCategory(APIView):
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 
+class CategoriesFromLoggedInUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        listcategory = ListCategory.objects.filter(category_owner=request.user)
+        serializer = ListCategorySerializer(listcategory, many=True)
+        return Response(serializer.data)
+
+
 class CategoryDetail(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -98,12 +170,12 @@ class CategoryDetail(APIView):
 
     def get(self, request, pk):
         listcategory = self.get_object(pk)
-        serializer = ListCategorySerializer(listcategory)
+        serializer = CategoryDetailSerializer(listcategory)
         return Response(serializer.data)
 
     def put(self, request, pk):
         listcategory = self.get_object(pk)
-        serializer = ListCategorySerializer(
+        serializer = CategoryDetailSerializer(
             instance=listcategory, data=request.data, partial=True
         )
         if serializer.is_valid():
