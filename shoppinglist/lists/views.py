@@ -8,6 +8,7 @@ from .serializers import (
     ListCategorySerializer,
     ListIndividualSerializer,
     ItemSerializer,
+    CategoryDetailSerializer,
     ListDetailSerializer,
     ItemDetailSerializer,
 )
@@ -50,12 +51,14 @@ class ItemDetail(APIView):
 
     def get(self, request, pk):
         item = self.get_object(pk)
-        serializer = ItemSerializer(item)
+        serializer = ItemDetailSerializer(item)
         return Response(serializer.data)
 
     def put(self, request, pk):
         item = self.get_object(pk)
-        serializer = ItemSerializer(instance=item, data=request.data, partial=True)
+        serializer = ItemDetailSerializer(
+            instance=item, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -137,7 +140,7 @@ class IndividualCategory(APIView):
 
 
 class CategoryDetail(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -149,12 +152,12 @@ class CategoryDetail(APIView):
 
     def get(self, request, pk):
         listcategory = self.get_object(pk)
-        serializer = ListCategorySerializer(listcategory)
+        serializer = CategoryDetailSerializer(listcategory)
         return Response(serializer.data)
 
     def put(self, request, pk):
         listcategory = self.get_object(pk)
-        serializer = ListCategorySerializer(
+        serializer = CategoryDetailSerializer(
             instance=listcategory, data=request.data, partial=True
         )
         if serializer.is_valid():

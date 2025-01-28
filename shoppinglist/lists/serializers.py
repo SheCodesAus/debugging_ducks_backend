@@ -46,3 +46,7 @@ class ItemDetailSerializer(ItemSerializer):
 
 class ListDetailSerializer(ListIndividualSerializer):
     items = ItemSerializer(many=True, read_only=True)
+
+
+class CategoryDetailSerializer(ListCategorySerializer):
+    lists = ListDetailSerializer(many=True, read_only=True)
