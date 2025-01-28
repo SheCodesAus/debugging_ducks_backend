@@ -21,6 +21,7 @@ class ListIndividualSerializer(serializers.ModelSerializer):
 
 class ListCategorySerializer(serializers.ModelSerializer):
     category_owner = serializers.ReadOnlyField(source="category_owner.id")
+    lists = ListIndividualSerializer(many=True, read_only=True)
 
     class Meta:
         model = apps.get_model("lists.ListCategory")

@@ -89,6 +89,15 @@ class IndividualLists(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ListsFromLoggedInUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        shoppinglists = ListIndividual.objects.filter(list_owner=request.user)
+        serializer = ListIndividualSerializer(shoppinglists, many=True)
+        return Response(serializer.data)
+
+
 class ListDetail(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -137,6 +146,15 @@ class IndividualCategory(APIView):
             serializer.save(category_owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class CategoriesFromLoggedInUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        listcategory = ListCategory.objects.filter(category_owner=request.user)
+        serializer = ListCategorySerializer(listcategory, many=True)
+        return Response(serializer.data)
 
 
 class CategoryDetail(APIView):
