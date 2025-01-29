@@ -60,7 +60,7 @@ class ItemDetail(APIView):
             instance=item, data=request.data, partial=True
         )
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(modified_by=request.user)
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -120,7 +120,7 @@ class ListDetail(APIView):
             instance=shoppinglist, data=request.data, partial=True
         )
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(modified_by=request.user)
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -179,7 +179,7 @@ class CategoryDetail(APIView):
             instance=listcategory, data=request.data, partial=True
         )
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(modified_by=request.user)
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
