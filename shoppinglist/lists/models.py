@@ -100,3 +100,6 @@ class Item(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        unique_together = ("list_id", "ranking")
