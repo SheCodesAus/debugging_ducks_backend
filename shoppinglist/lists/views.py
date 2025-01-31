@@ -1,6 +1,7 @@
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework import status, permissions
 from django.http import Http404
 from .models import ListCategory, ListIndividual, Item
@@ -37,6 +38,15 @@ class ItemsList(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    class Meta:
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Item.objects.all(),
+                fields=["list_id", "ranking"],
+                message="This list already has an item with this ranking. Please choose a different ranking value.",
+            )
+        ]
+
 
 class ItemDetail(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -64,6 +74,15 @@ class ItemDetail(APIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    class Meta:
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Item.objects.all(),
+                fields=["list_id", "ranking"],
+                message="This list already has an item with this ranking. Please choose a different ranking value.",
+            )
+        ]
 
 
 class IndividualLists(APIView):
