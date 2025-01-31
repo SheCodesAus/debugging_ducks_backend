@@ -39,8 +39,10 @@ class ItemDetailSerializer(ItemSerializer):
         instance.favourite = validated_data.get("favourite", instance.favourite)
         instance.purchased = validated_data.get("purchased", instance.purchased)
         instance.cost = validated_data.get("cost", instance.cost)
-        instance.comments = validated_data.get("name", instance.comments)
-        # HAVEN'T ADDED OTHER USER UPDATES YET
+        instance.comments = validated_data.get("comments", instance.comments)
+        instance.modified_by = validated_data.get("modified_by", instance.modified_by)
+        instance.archived_at = validated_data.get("archived_at", instance.archived_at)
+        instance.archived_by = validated_data.get("archived_by", instance.archived_by)
         instance.save()
         return instance
 
@@ -48,6 +50,32 @@ class ItemDetailSerializer(ItemSerializer):
 class ListDetailSerializer(ListIndividualSerializer):
     items = ItemSerializer(many=True, read_only=True)
 
+    def update(self, instance, validated_data):
+        instance.list_name = validated_data.get("list_name", instance.list_name)
+        instance.notes = validated_data.get("notes", instance.notes)
+        instance.image = validated_data.get("image", instance.image)
+        instance.individual_budget = validated_data.get(
+            "individual_budget", instance.individual_budget
+        )
+        instance.modified_by = validated_data.get("modified_by", instance.modified_by)
+        instance.archived_at = validated_data.get("archived_at", instance.archived_at)
+        instance.archived_by = validated_data.get("archived_by", instance.archived_by)
+        instance.save()
+        return instance
+
 
 class CategoryDetailSerializer(ListCategorySerializer):
     lists = ListDetailSerializer(many=True, read_only=True)
+
+    def update(self, instance, validated_data):
+        instance.category_name = validated_data.get(
+            "category_name", instance.category_name
+        )
+        instance.category_budget = validated_data.get(
+            "category_budget", instance.category_budget
+        )
+        instance.modified_by = validated_data.get("modified_by", instance.modified_by)
+        instance.archived_at = validated_data.get("archived_at", instance.archived_at)
+        instance.archived_by = validated_data.get("archived_by", instance.archived_by)
+        instance.save()
+        return instance
