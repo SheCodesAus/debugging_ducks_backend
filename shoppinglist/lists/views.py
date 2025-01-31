@@ -94,6 +94,11 @@ class ItemDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk):
+        item = self.get_object(pk)
+        item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     class Meta:
         validators = [
             UniqueTogetherValidator(
@@ -229,6 +234,11 @@ class ListDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk):
+        shoppinglist = self.get_object(pk)
+        shoppinglist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class IndividualCategory(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -287,3 +297,8 @@ class CategoryDetail(APIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        listcategory = self.get_object(pk)
+        listcategory.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
