@@ -14,6 +14,7 @@ from .serializers import (
     ItemDetailSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
+from datetime import datetime
 
 
 class ItemsList(APIView):
@@ -116,6 +117,8 @@ class ItemBulkUpdate(APIView):
                 for field, value in item.items():
                     if field != "id":  # Don't update the 'id' field
                         setattr(updated_item, field, value)
+                setattr(updated_item, "modified_at", datetime.now())
+                setattr(updated_item, "modified_by", request.user)
                 updated_items.append(updated_item)
             else:
                 return Response(
