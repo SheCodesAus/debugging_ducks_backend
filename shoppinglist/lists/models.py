@@ -4,7 +4,9 @@ from django.contrib.auth import get_user_model
 
 class ListCategory(models.Model):
     category_name = models.CharField(max_length=255)
-    category_budget = models.IntegerField(blank=True, null=True)
+    category_budget = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     category_owner = models.ForeignKey(
         get_user_model(),
@@ -33,7 +35,9 @@ class ListIndividual(models.Model):
     list_name = models.CharField(max_length=255)
     notes = models.TextField(max_length=255, blank=True)
     image = models.URLField(blank=True)
-    individual_budget = models.IntegerField(blank=True, null=True)
+    individual_budget = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     category_id = models.ForeignKey(
         "ListCategory",
         on_delete=models.CASCADE,
@@ -76,7 +80,7 @@ class Item(models.Model):
     ranking = models.IntegerField()
     favourite = models.BooleanField(default=False)
     purchased = models.BooleanField(default=False)
-    cost = models.IntegerField(blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     comments = models.TextField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
