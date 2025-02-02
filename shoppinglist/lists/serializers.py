@@ -71,6 +71,7 @@ class CategoryDetailSerializer(ListCategorySerializer):
         instance.category_name = validated_data.get(
             "category_name", instance.category_name
         )
+        instance.wishlist = validated_data.get("wishlist", instance.wishlist)
         instance.category_budget = validated_data.get(
             "category_budget", instance.category_budget
         )
