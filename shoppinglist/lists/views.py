@@ -22,15 +22,15 @@ class ItemsList(APIView):
 
     def get_queryset(self):
         queryset = Item.objects.all()
-        list_id = self.request.query_params.get('list_id', None)
-        archived = self.request.query_params.get('archived', None)
+        list_id = self.request.query_params.get("list_id", None)
+        archived = self.request.query_params.get("archived", None)
 
         if list_id is not None:
             queryset = queryset.filter(list_id=list_id)
-        
+
         if archived is not None:
             # Convert string 'false' to boolean False
-            is_archived = archived.lower() == 'true'
+            is_archived = archived.lower() == "true"
             if is_archived:
                 queryset = queryset.filter(archived_at__isnull=False)
             else:

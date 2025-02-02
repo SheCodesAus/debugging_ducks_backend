@@ -7,6 +7,7 @@ class ListCategory(models.Model):
     category_budget = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
+    wishlist = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     category_owner = models.ForeignKey(
         get_user_model(),
